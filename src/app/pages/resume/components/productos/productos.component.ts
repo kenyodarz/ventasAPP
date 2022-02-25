@@ -16,7 +16,7 @@ import { Producto } from 'src/app/core/models/producto';
 export class ProductosComponent implements OnInit {
   producto: Producto = new Producto();
   productos: Producto[] = [];
-  selectedProducto?: Producto;
+  selectedProducto: Producto | null = null;
   formProducto!: FormGroup;
   constructor(
     private productoService: ProductoService,
@@ -141,7 +141,7 @@ export class ProductosComponent implements OnInit {
 
   onCancelar() {
     this.formProducto.reset();
-    this.selectedProducto = new Producto();
+    this.selectedProducto = null;
   }
 
   onGuardar() {
