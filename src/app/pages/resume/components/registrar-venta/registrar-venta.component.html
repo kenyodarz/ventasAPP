@@ -1,1 +1,250 @@
-<p>registrar-venta works!</p>
+<div class="flex">
+  <div class="sm:col-5">
+    <p-card>
+      <div class="p-fluid grid">
+        <div class="field col-12 grid">
+          <div class="col-12 mb:col-2">
+            <p-chip label="Datos Cliente" icon="pi pi-user"></p-chip>
+          </div>
+          <div class="col-5">
+            <div class="p-fluid">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"
+                  ><i class="pi pi-angle-right"></i
+                ></span>
+                <input
+                  type="text"
+                  [(ngModel)]="dni"
+                  (ngModelChange)="buscarClientePorDNI($event)"
+                  pInputText
+                  placeholder="Codigo"
+                />
+                <button
+                  class="p-inputgroup-addon"
+                  (click)="buscarClientePorDNI(dni)"
+                >
+                  <i class="pi pi-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="p-fluid">
+              <div class="field">
+                <input
+                  id="firstname1"
+                  [(ngModel)]="nombreCliente"
+                  type="text"
+                  readonly
+                  pInputText
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field col-12 grid">
+          <div class="col-12 mb:col-2">
+            <p-chip label="Datos Producto" icon="pi pi-briefcase"></p-chip>
+          </div>
+          <div class="col-5">
+            <div class="p-fluid">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon"
+                  ><i class="pi pi-angle-right"></i
+                ></span>
+                <input
+                  type="text"
+                  [ngModel]="idProducto"
+                  pInputText
+                  pKeyFilter="int"
+                  (ngModelChange)="obtenerProducto($event)"
+                  placeholder="Codigo"
+                />
+                <button
+                  (click)="obtenerProducto(idProducto!)"
+                  class="p-inputgroup-addon"
+                >
+                  <i class="pi pi-search"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="col-7">
+            <div class="p-fluid">
+              <div class="field">
+                <input
+                  id="producto"
+                  type="text"
+                  readonly
+                  [(ngModel)]="producto.nombres"
+                  pInputText
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col-5">
+            <div class="p-fluid">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">$</span>
+                <input
+                  type="text"
+                  [(ngModel)]="producto.precio"
+                  pInputText
+                  placeholder="Valor"
+                  readonly
+                />
+                <span class="p-inputgroup-addon">.00</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="p-fluid">
+              <div class="field">
+                <p-inputNumber
+                  mode="decimal"
+                  [showButtons]="true"
+                  inputId="minmax-buttons"
+                  [(ngModel)]="cantidadProducto"
+                  [min]="1"
+                  [max]="producto.stock!"
+                  id="cantidad"
+                >
+                </p-inputNumber>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="p-fluid">
+              <div class="p-inputgroup">
+                <span class="p-inputgroup-addon">
+                  <i class="pi pi-tag"></i>
+                </span>
+                <input
+                  type="text"
+                  [(ngModel)]="producto.stock"
+                  pInputText
+                  placeholder="Stock"
+                  readonly
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="field col-12 grid">
+          <div class="col-6">
+            <div class="p-fluid">
+              <button
+                pButton
+                pRipple
+                icon="pi pi-shopping-cart"
+                [disabled]="idProducto == null && dni == ''"
+                type="button"
+                label="Agregar Producto"
+                (click)="onAgregarProducto()"
+                class="p-button-outlined"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </div>
+  <div class="sm:col-7">
+    <p-card>
+      <div class="p-fluid">
+        <div class="field grid">
+          <label for="numeroSerie" class="col-12 mb:col-2 md:col-3 mb:md:col-0"
+            >Numero Serie:
+          </label>
+          <div class="col-12 md:col-9">
+            <input
+              id="numeroSerie"
+              [(ngModel)]="numeroSerie"
+              readonly
+              type="text"
+              pInputText
+              class="text-right font-bold"
+            />
+          </div>
+        </div>
+      </div>
+      <p-table
+        [value]="ventasNuevas"
+        #dt
+        [paginator]="true"
+        dataKey="idCliente"
+        [rows]="10"
+        [responsive]="true"
+        [globalFilterFields]="['']"
+      >
+        <ng-template pTemplate="caption"></ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Nro</th>
+            <th>Codigo</th>
+            <th>Descripcion</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowIndex="rowIndex" let-ventaNueva>
+          <tr>
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ ventaNueva.id }}</td>
+            <td>{{ ventaNueva.descriptionP }}</td>
+            <td>{{ ventaNueva.precio }}</td>
+            <td>{{ ventaNueva.cantidad }}</td>
+            <td>{{ ventaNueva.subtotal }}</td>
+            <td>
+              <button
+                pButton
+                pRipple
+                type="button"
+                icon="pi pi-trash"
+                class="p-button-rounded p-button-danger p-button-text"
+                styleClass="p-button-sm"
+                (click)="onEliminar(ventaNueva)"
+              ></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+          <div class="field grid justify-content-end">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Generar Venta"
+              (click)="onGenerarVenta()"
+              [disabled]="total === 0 || cliente === null"
+              class="p-button-outlined p-button-success"
+            ></button>
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Cancelar"
+              class="p-button-outlined p-ml-1 p-button-danger"
+            ></button>
+            <p-inputNumber
+              [(ngModel)]="total"
+              [disabled] = true
+              class="p-ml-1 p-inputtext-lg"
+              inputId="locale-us"
+              mode="currency"
+              locale="en-US"
+              placeholder="Total"
+              [minFractionDigits]="2"
+              inputId="currency-us"
+              currency="USD"
+              inputStyleClass="text-right font-bold"
+            >
+            </p-inputNumber>
+          </div>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</div>
